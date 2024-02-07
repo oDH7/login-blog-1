@@ -1,5 +1,5 @@
 const express = require('express');
-const mysql = require('mysql2');
+const mysql = require('mysql');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const app = express();
@@ -8,7 +8,7 @@ const app = express();
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'phpmyadmin',
-    password: '123456789',
+    password: 'DhLPO7',
     database: 'mydb',
 });
 
@@ -61,14 +61,11 @@ app.get('/login', (req, res) => {
 
 
 app.get('/about', (req, res) => {
-    const dados = [
-        { titulo: "Post 1", conteudo: "Conteúdo post 1" },
-        { titulo: "Post 2", conteudo: "Conteúdo post 2" },
-        { titulo: "Post 3", conteudo: "Conteúdo post 3" }
-    ];
-
-    res.render('pages/about', { req: req, posts: dados });
-});
+    const teste = 
+        titulo: "post 1", conteudo: "Conteudo post1" }
+    )
+    res.render('pages/about', { req: req })
+;
 
 // Rota para processar o formulário de login
 app.post('/login', (req, res) => {
@@ -93,16 +90,14 @@ app.post('/login', (req, res) => {
 // Rota para processar o formulário de caastro depostagem
 app.post('/cadastrar_posts', (req, res) => {
     const { titulo, conteudo } = req.body;
-    const autor = "admin";
-    const datapostagem = new Date();
 
     // const query = 'SELECT * FROM users WHERE username = ? AND password = SHA1(?)';
-    const query = 'INSERT INTO posts (titulo, conteudo, autor, datapostagem) VALUES (?, ?, ?, ?)';
+    const query = 'INSERT INTO posts (titulo, conteudo) VALUES (?,?)';
 
-    db.query(query, [titulo, conteudo, autor, datapostagem], (err, results) => {
+    db.query(query, [titulo, conteudo], (err, results) => {
         if (err) throw err;
-        console.log(`Rotina cadastrar posts: ${JSON.stringify(results)}`);
-        if (results.affectedRows > 0) {
+
+        if (results.length > 0) {
             console.log('Cadastro de postagem OK')
             res.redirect('/dashboard');
         } else {
@@ -113,7 +108,7 @@ app.post('/cadastrar_posts', (req, res) => {
 });
 
 // const query = 'INSERT INTO users (username, password) VALUES (?, SHA1(?))';
-// console.log(`POST /CADASTRAR -> query -> ${query}`);
+// console.log(`POST /CADASTAR -> query -> ${query}`);
 // db.query(query, [username, password], (err, results) => {
 //     console.log(results);
 //     //console.log(`POST /CADASTAR -> results -> ${results}`);
@@ -133,11 +128,7 @@ app.post('/cadastrar_posts', (req, res) => {
 // Rota para a página cadastro do post
 app.get('/cadastrar_posts', (req, res) => {
     // Quando for renderizar páginas pelo EJS, passe parametros para ele em forma de JSON
-    if (req.session.loggedin) {
-        res.render('pages/cadastrar_posts', { req: req });
-    } else {
-        res.redirect('/login_failed');
-    }
+    res.render('pages/cadastrar_posts', { req: req });
 });
 
 // Rotas para cadastrar
@@ -164,10 +155,10 @@ app.post('/cadastrar', (req, res) => {
         } else {
             // Cadastra o usuário caso não exista
             const query = 'INSERT INTO users (username, password) VALUES (?, SHA1(?))';
-            console.log(`POST /CADASTRAR -> query -> ${query}`);
+            console.log(`POST /CADASTAR -> query -> ${query}`);
             db.query(query, [username, password], (err, results) => {
                 console.log(results);
-                //console.log(`POST /CADASTRAR -> results -> ${results}`);
+                //console.log(`POST /CADASTAR -> results -> ${results}`);
 
                 if (err) {
                     console.log(`ERRO NO CADASTRO: ${err}`);
